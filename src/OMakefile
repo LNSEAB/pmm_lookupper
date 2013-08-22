@@ -1,0 +1,20 @@
+CXXFILES[] = main
+
+.SCANNER: %.o: %.cpp
+	$(CXX) $(INCLUDE) -MM $<
+
+%.o: %.cpp
+	$(CXX) -c $(CXXFLAGS) $< -o $@
+
+resource.o: resource.rc
+	windres $^ $@
+
+../$(PROGRAM): $(addsuffix .o, $(CXXFILES)) resource.o
+	$(CXX) $(LDFLAGS) $^ $(LIBS) -o $@
+
+all: ../$(PROGRAM)
+
+clean:
+	rm -rf $(filter-proper-targets $(ls R, .))
+
+.DEFAULT: all

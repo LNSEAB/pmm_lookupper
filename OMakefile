@@ -1,0 +1,14 @@
+.PHONY: all clean
+
+CXX = g++
+CXXFLAGS = -std=c++11 -mwindows -Wall -Wunused-parameter -O3 -g -DBOOST_ERROR_CODE_HEADER_ONLY -DBOOST_SYSTEM_NO_LIB
+INCLUDE = 
+LDFLAGS = -mwindows -static 
+LIBS = -lkernel32 -lgdi32 -luser32 -lcomctl32 -lshlwapi
+
+PROGRAM = pmm_lookupper$(EXE)
+
+clean:
+	rm -rf $(PROGRAM)
+
+.SUBDIRS: $(subdirs P, .)
