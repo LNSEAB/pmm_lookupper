@@ -1,7 +1,7 @@
 CXXFILES[] = main
 
 .SCANNER: %.o: %.cpp
-	$(CXX) $(INCLUDE) -MM $<
+	$(CXX) -std=c++11 $(INCLUDE) -MM $<
 
 %.o: %.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
