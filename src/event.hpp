@@ -18,6 +18,12 @@ namespace pmm_lookupper { namespace event {
 		using type = void (Widget&, UINT, WPARAM, LPARAM);
 	};
 
+	struct notify
+	{
+		template <class Widget>
+		using type = void (Widget&, UINT, NMHDR const*);
+	};
+
 	struct close
 	{
 		template <class Widget>

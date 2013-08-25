@@ -6,6 +6,7 @@
 #include "procedure.hpp"
 #include "pmm.hpp"
 #include "result_view.hpp"
+#include "filter.hpp"
 #include <boost/spirit/include/qi.hpp>
 
 namespace pmm_lookupper {
@@ -15,11 +16,12 @@ namespace pmm_lookupper {
 	public:
 		using event_handler_type = event_handler< 
 			main_window, 
-			event::drop_files, event::command, event::close, event::destroy 
+			event::drop_files, event::command, event::notify, event::close, event::destroy 
 		>;
 
 	private:
 		HWND dlg_;
+		HMENU popup_;
 		boost::shared_ptr< result_view< main_window > > result_;
 		event_handler_type eh_;
 		std::vector< std::string > data_;
@@ -35,7 +37,11 @@ namespace pmm_lookupper {
 			if( dlg_ ) {
 				eh_.set( event::command(), &on_command );
 				eh_.set( event::drop_files(), &on_dragfiles );
+				eh_.set( event::notify(), &on_notify );
 				eh_.set( event::destroy(), &on_destroy );
+
+				popup_ = LoadMenuW( nullptr, MAKEINTRESOURCEW( IDR_POPUPMENU ) );
+
 				set_window_text( GetDlgItem( dlg_, IDC_EXTFILTER ), "pmx, pmd, x, wav, bmp" );
 			}
 		}
@@ -56,6 +62,20 @@ namespace pmm_lookupper {
 			return result_;
 		}
 
+		inline std::vector< std::string > get_extensions() const
+		{
+			namespace qi = boost::spirit::qi;
+
+			auto const tmp_exts = get_window_text( GetDlgItem( handle(), IDC_EXTFILTER ) );
+			auto const parser = qi::as_string[+qi::alnum] % ',';
+			std::vector< std::string > exts;
+
+			qi::phrase_parse( tmp_exts.begin(), tmp_exts.end(), parser, qi::space_type(), exts );
+			boost::for_each( exts, [](std::string& s){ s = std::string( "." ) + s; } );
+
+			return exts;
+		}
+
 		inline explicit operator bool() const noexcept
 		{
 			return dlg_ && IsWindow( dlg_ );
@@ -63,17 +83,17 @@ namespace pmm_lookupper {
 
 		void update()
 		{
-			auto buf = get_data();
+			auto buf = data_;
 
 			if( IsDlgButtonChecked( handle(), IDC_FOLDER_ONLY ) ) {
-				buf = filter_folder( buf );
+				buf = remove_file_path( buf );
 			}
 			else {
-				buf = filter_exts( buf );
+				buf = match_extension( buf, get_extensions() );
 			}
 			boost::sort( buf );
 
-			if( IsDlgButtonChecked( handle(), IDC_DUPLICATION ) ) {
+			if( !IsDlgButtonChecked( handle(), IDC_DUPLICATION ) ) {
 				buf.erase( std::unique( buf.begin(), buf.end() ), buf.end() );
 			}
 
@@ -83,69 +103,68 @@ namespace pmm_lookupper {
 
 		void refresh(std::vector< std::string > const& files)
 		{
+			std::vector< std::string > errors;
+
 			for( auto const& f : files ) {
 				auto const paths = find_pmm_paths( f );
 				if( paths.which() == 1 ) {
-					message_box( "エラー", boost::get< std::string >( paths ), MB_OK | MB_ICONWARNING );
+					errors.push_back( f );
 				}
 				else {
-					stock_data( boost::get< std::vector< std::string > >( paths ) );
+					data_ = boost::get< std::vector< std::string > >( paths );
 				}
+			}
+
+			if( !errors.empty() ) {
+				std::string str( "読み込めないファイルがありました。\r\n" );
+
+				for( auto const& s : errors ) {
+					str += s + "\r\n";
+				}
+
+				message_box( "エラー", str, MB_OK | MB_ICONWARNING );
 			}
 
 			update();
 		}
 
 	private:
-		inline void stock_data(std::vector< std::string > const& v)
+		void show_explorer() const
 		{
-			data_ = v;
-		}
-
-		inline std::vector< std::string > const& get_data() const noexcept
-		{
-			return data_;
-		}
-
-		std::vector< std::string > filter_folder(std::vector< std::string > const& buf) const
-		{
-			std::vector< std::string > result;
-
-			for( auto const& str : buf ) {
-				auto const p = str.find_last_of( "\\" );
-				result.emplace_back( str.substr( 0, p ) );
-			}
-
-			return result;
-		}
-
-		std::vector< std::string > filter_exts(std::vector< std::string > const& buf) const
-		{
-			namespace qi = boost::spirit::qi;
-
-			auto const tmp_exts = get_window_text( GetDlgItem( handle(), IDC_EXTFILTER ) );
-			auto const parser = qi::as_string[+qi::alnum] % ',';
-
-			std::vector< std::string > exts;
-			qi::phrase_parse( tmp_exts.begin(), tmp_exts.end(), parser, qi::space_type(), exts );
-			boost::for_each( exts, [](std::string& s){ s = std::string( "." ) + s; } );
-
-			std::vector< std::string > result;
-			for( auto const& path : buf ) {
-				auto p = path.find_last_of( '.' );
-				if( p == path.npos ) {
-					continue;
-				}
-
-				for( auto const& ext : exts ) {
-					if( path.find( ext, p ) != path.npos ) {
-						result.emplace_back( path );
-						break;
-					}
+			auto paths = get_result_view()->selected();
+			paths = remove_file_path( paths );
+			paths.erase( std::unique( paths.begin(), paths.end() ), paths.end() );
+			
+			if( paths.size() >= 3 ) {
+				auto const result = message_box( 
+					"確認", "ウィンドウを3つ以上同時に開こうとしていますが、開きますか？",  
+					MB_OKCANCEL | MB_ICONINFORMATION, handle()
+				);
+				if( result != IDOK ) {
+					return;
 				}
 			}
 
-			return result;
+			for( auto const& path : paths ) {
+				explorer_execute( handle(), path );
+			}
+		}
+
+		void on_copy() const
+		{
+			auto paths = get_result_view()->selected();
+			if( paths.empty() ) {
+				return;
+			}
+
+			std::string str;
+
+			for( auto itr = paths.begin(); itr != paths.begin() + paths.size() - 1; ++itr ) {
+				str += itr->substr( 0, itr->find( '\0' ) ) + "\r\n";
+			}
+			str += paths.back();
+
+			copy_to_clipboard( handle(), str );
 		}
 
 		static void on_idc_open(main_window& wnd)
@@ -171,27 +190,6 @@ namespace pmm_lookupper {
 					auto const s = convert_code( str, CP_UTF8, CP_OEMCP );
 					ofs << s.substr( 0, s.find( '\0' ) ) << std::endl;
 				}
-			}
-		}
-
-		static void on_idc_explorer(main_window& wnd)
-		{
-			auto paths = wnd.get_result_view()->selected();
-			paths = wnd.filter_folder( paths );
-			paths.erase( std::unique( paths.begin(), paths.end() ), paths.end() );
-			
-			if( paths.size() >= 3 ) {
-				auto const result = message_box( 
-					"確認", "ウィンドウを3つ以上同時に開こうとしていますが、開きますか？",  
-					MB_OKCANCEL | MB_ICONINFORMATION, wnd.handle()
-				);
-				if( result != IDOK ) {
-					return;
-				}
-			}
-
-			for( auto const& path : paths ) {
-				explorer_execute( wnd.handle(), path );
 			}
 		}
 
@@ -231,8 +229,17 @@ namespace pmm_lookupper {
 				wnd.update();
 				break;
 
-			case IDC_EXPLORER :
-				on_idc_explorer( wnd );
+			case IDM_COPY :
+			case IDM_POPUP_COPY :
+				wnd.on_copy();
+				break;
+
+			case IDM_ALLSELECT :
+				wnd.get_result_view()->all_select();
+				break;
+
+			case IDM_EXPLORER :
+				wnd.show_explorer();
 				break;
 			}
 		}
@@ -247,8 +254,29 @@ namespace pmm_lookupper {
 			wnd.refresh( files );
 		}
 
-		static void on_destroy(main_window&) noexcept
+		static void result_notify(main_window& wnd, NMHDR const* hdr)
 		{
+			if( hdr->code == NM_RCLICK ) {
+				POINT pt;
+				GetCursorPos( &pt );
+				TrackPopupMenu( GetSubMenu( wnd.popup_, 0 ), TPM_LEFTALIGN, pt.x, pt.y, 0, wnd.handle(), nullptr );
+			}
+		}
+
+		static void on_notify(main_window& wnd, UINT id, NMHDR const* hdr)
+		{
+			switch( id ) {
+			case IDC_RESULT :
+				result_notify( wnd, hdr );
+				break;
+			}
+		}
+
+		static void on_destroy(main_window& wnd) noexcept
+		{
+			if( wnd.popup_ ) {
+				DestroyMenu( wnd.popup_ );
+			}
 			PostQuitMessage( 0 );
 		}
 

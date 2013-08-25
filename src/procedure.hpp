@@ -33,6 +33,10 @@ namespace pmm_lookupper {
 				obj->event().invoke( event::drop_files(), *obj, reinterpret_cast< HDROP >( wparam ) );
 				return TRUE;
 
+			case WM_NOTIFY:
+				obj->event().invoke( event::notify(), *obj, wparam, reinterpret_cast< NMHDR const* >( lparam ) );
+				return TRUE;
+
 			case WM_CLOSE :
 				if( obj->event().empty( event::close() ) || *( obj->event().invoke( event::close(), *obj ) ) ) {
 					DestroyWindow( hwnd );
@@ -69,6 +73,10 @@ namespace pmm_lookupper {
 			switch( msg ) {
 			case WM_DROPFILES :
 				obj->event().invoke( event::drop_files(), *obj, reinterpret_cast< HDROP >( wparam ) );
+				break;
+
+			case WM_DESTROY:
+				obj->event().invoke( event::destroy(), *obj );
 				break;
 			}
 

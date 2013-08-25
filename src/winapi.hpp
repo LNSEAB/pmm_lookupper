@@ -114,7 +114,7 @@ namespace pmm_lookupper {
 		strs.reserve( cnt );
 
 		for( UINT i = 0; i < cnt; ++i ) {
-			UINT const sz = DragQueryFileW( p, i, nullptr, 0 ) + 1;
+			UINT const sz = DragQueryFileW( p, i, nullptr, 0 );
 
 			std::wstring str( sz, L'\0' );
 			DragQueryFileW( p, i, &str[0], str.size() );
@@ -172,9 +172,9 @@ namespace pmm_lookupper {
 
 		std::wstring first_str( buf.begin(), boost::find( buf, L'\0' ) );
 		if( PathIsDirectoryW( first_str.c_str() ) ) {
-			for( auto itr = boost::find( buf, L'\0' ) + 1; itr != buf.end(); ++itr ) {
+			for( auto itr = boost::find( buf, L'\0' ) + 1; itr != buf.end() && *itr != L'\0'; ++itr ) {
 				auto i = std::find( itr, buf.end(), L'\0' );
-				result.emplace_back( wide_to_multibyte( std::wstring( itr, i + 1 ), CP_UTF8 ) );
+				result.emplace_back( wide_to_multibyte( first_str + L'\\' + std::wstring( itr, i ), CP_UTF8 ) );
 				itr = i;
 			}
 		}
@@ -216,6 +216,33 @@ namespace pmm_lookupper {
 	{
 		std::wstring path_w( multibyte_to_wide( path, CP_UTF8 ) );
 		ShellExecuteW( hwnd, L"explore", path_w.c_str(), nullptr, nullptr, SW_SHOWNORMAL );
+	}
+
+	inline void copy_to_clipboard(HWND hwnd, boost::string_ref str)
+	{
+		std::string const s( convert_code( str, CP_UTF8, CP_OEMCP ) );
+
+		HGLOBAL buf = GlobalAlloc( GHND | GMEM_SHARE, s.size() );
+		if( !buf ) {
+			return;
+		}
+
+		auto p = static_cast< char* >( GlobalLock( buf ) );
+		if( !p ) {
+			GlobalFree( buf );
+			return;
+		}
+		boost::copy( s, p );
+		GlobalUnlock( buf );
+
+		if( !OpenClipboard( hwnd ) ) {
+			GlobalFree( buf );
+			return;
+		}
+
+		EmptyClipboard();
+		SetClipboardData( CF_TEXT, buf );
+		CloseClipboard();
 	}
 
 } // namespace pmm_lookupper

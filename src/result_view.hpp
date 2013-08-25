@@ -14,7 +14,7 @@ namespace pmm_lookupper {
 	public:
 		using event_handler_type = event_handler< 
 			result_view, 
-			event::drop_files 
+			event::drop_files, event::destroy
 		>;
 
 	private:
@@ -80,6 +80,15 @@ namespace pmm_lookupper {
 			}
 
 			return result;
+		}
+
+		void all_select() noexcept
+		{
+			LVITEMW item = { 0 };
+			item.stateMask = LVIS_SELECTED;
+			item.state = LVIS_SELECTED;
+
+			SendMessageW( wnd_, LVM_SETITEMSTATE, -1, reinterpret_cast< LPARAM >( &item ) );
 		}
 
 		inline std::vector< std::string > const& data() const noexcept

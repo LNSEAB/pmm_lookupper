@@ -4,7 +4,7 @@
 #include "winapi.hpp"
 #include "main_window.hpp"
 
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int cmdshow)
+int WINAPI WinMain(HINSTANCE hinst, HINSTANCE, LPSTR, int cmdshow)
 {
 	try {
 		InitCommonControls();
@@ -13,6 +13,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int cmdshow)
 		if( !wnd ) {
 			throw std::runtime_error( "ウィンドウを生成できませんでした" );
 		}
+
+		HACCEL accel = LoadAccelerators( hinst, MAKEINTRESOURCEW( IDR_ACCELERATORS ) );
 
 		ShowWindow( wnd->handle(), cmdshow );
 
@@ -26,9 +28,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int cmdshow)
 				throw std::runtime_error( "GetMessageエラー" );
 			}
 
-			TranslateMessage( &msg );
-			DispatchMessageW( &msg );
+			if( !TranslateAccelerator( wnd->handle(), accel, &msg ) ) {
+				TranslateMessage( &msg );
+				DispatchMessageW( &msg );
+			}
 		}
+
+		DestroyAcceleratorTable( accel );
 	}
 	catch( std::exception const& e ) {
 		pmm_lookupper::message_box( "エラー", e.what(), MB_OK | MB_ICONWARNING );
