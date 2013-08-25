@@ -114,7 +114,7 @@ namespace pmm_lookupper {
 		strs.reserve( cnt );
 
 		for( UINT i = 0; i < cnt; ++i ) {
-			UINT const sz = DragQueryFileW( p, i, nullptr, 0 );
+			UINT const sz = DragQueryFileW( p, i, nullptr, 0 ) + 1;
 
 			std::wstring str( sz, L'\0' );
 			DragQueryFileW( p, i, &str[0], str.size() );
