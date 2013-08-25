@@ -12,8 +12,13 @@ namespace pmm_lookupper {
 		std::vector< std::string > result;
 
 		for( auto const& str : buf ) {
-			auto const p = str.find_last_of( '\\' );
-			result.emplace_back( str.substr( 0, p ) );
+			if( PathIsDirectoryW( multibyte_to_wide( str, CP_UTF8 ).c_str() ) ) {
+				result.emplace_back( str );
+			}
+			else {
+				auto const p = str.find_last_of( '\\' );
+				result.emplace_back( str.substr( 0, p ) );
+			}
 		}
 
 		return result;
