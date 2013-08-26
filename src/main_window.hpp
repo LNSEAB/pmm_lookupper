@@ -337,11 +337,11 @@ namespace pmm_lookupper {
 
 		static void on_sizing(main_window& wnd, UINT, RECT const& rc)
 		{
+			auto const rv_x = rc.right - rc.left - wnd.rv_offset_.right - wnd.rv_offset_.left; 
+			auto const rv_y = rc.bottom - rc.top - wnd.rv_offset_.bottom - wnd.rv_offset_.top;
 			SetWindowPos( 
 				wnd.result_->handle(), nullptr,
-				0, 0, 
-				rc.right - rc.left - wnd.rv_offset_.right - wnd.rv_offset_.left, 
-				rc.bottom - rc.top - wnd.rv_offset_.bottom - wnd.rv_offset_.top,
+				0, 0, rv_x, rv_y,	
 				SWP_NOZORDER | SWP_NOMOVE
 			);
 
@@ -351,9 +351,11 @@ namespace pmm_lookupper {
 					rc.right - rc.left - wnd.opt_offsets_[i].x - GetSystemMetrics( SM_CXSIZEFRAME ) * 2, 
 					wnd.opt_offsets_[i].y, 
 					0, 0,
-					SWP_NOZORDER | SWP_NOSIZE | SWP_ASYNCWINDOWPOS
+					SWP_NOZORDER | SWP_NOSIZE 
 				);
 			}
+
+			wnd.get_result_view()->set_column_size( 0, static_cast< int >( rv_x * 0.97f ) );
 		}
 
 		static void on_destroy(main_window& wnd) noexcept

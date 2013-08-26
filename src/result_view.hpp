@@ -31,8 +31,7 @@ namespace pmm_lookupper {
 				RECT rc;
 				GetWindowRect( wnd_, &rc );
 
-				insert_column( 0, "ファイルパス", static_cast< int >( ( rc.right - rc.left ) * 0.8f ) );
-				insert_column( 1, "メモ", static_cast< int >( ( rc.right - rc.left ) * 0.15f ) );
+				insert_column( 0, "ファイルパス", static_cast< int >( ( rc.right - rc.left ) * 0.97f ) );
 
 				eh_.set( event::drop_files(), &on_drop_files );
 
@@ -81,6 +80,15 @@ namespace pmm_lookupper {
 			item.state = LVIS_SELECTED;
 
 			SendMessageW( wnd_, LVM_SETITEMSTATE, -1, reinterpret_cast< LPARAM >( &item ) );
+		}
+
+		void set_column_size(int index, int sz) noexcept
+		{
+			LVCOLUMNW col = { 0 };
+			col.mask = LVCF_WIDTH;
+			col.cx = sz;
+
+			SendMessageW( wnd_, LVM_SETCOLUMN, index, reinterpret_cast< LPARAM >( &col ) );
 		}
 
 		inline std::vector< std::string > const& data() const noexcept
