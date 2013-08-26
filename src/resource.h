@@ -7,6 +7,7 @@
 #define IDD_VERSION                             106
 #define IDR_POPUPMENU                           109
 #define IDR_ACCELERATORS                        111
+#define IDC_STATIC_EXT                          1000
 #define IDC_DUPLICATION                         1002
 #define IDC_RESULT                              1003
 #define IDM_COPY                                40000

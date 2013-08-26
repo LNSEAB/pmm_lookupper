@@ -28,19 +28,11 @@ namespace pmm_lookupper {
 			wnd_( GetDlgItem( parent, id ) )
 		{ 
 			if( wnd_ ) {
-				std::wstring wstr( multibyte_to_wide( std::string( "ファイルパス" ), CP_UTF8 ) );
-
 				RECT rc;
 				GetWindowRect( wnd_, &rc );
 
-				LVCOLUMNW col = { 0 };
-				col.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH;
-				col.fmt = LVCFMT_LEFT;	
-				col.cx = rc.right - rc.left - 5;
-				col.pszText = &wstr[0];
-				col.cchTextMax = wstr.size();
-
-				SendMessageW( wnd_, LVM_INSERTCOLUMN, 0, reinterpret_cast< LPARAM >( &col ) );
+				insert_column( 0, "ファイルパス", static_cast< int >( ( rc.right - rc.left ) * 0.8f ) );
+				insert_column( 1, "メモ", static_cast< int >( ( rc.right - rc.left ) * 0.15f ) );
 
 				eh_.set( event::drop_files(), &on_drop_files );
 
@@ -107,6 +99,20 @@ namespace pmm_lookupper {
 		}
 
 	private:
+		void insert_column(int index, boost::string_ref str, int sz) 
+		{
+			std::wstring wstr( multibyte_to_wide( str, CP_UTF8 ) );
+
+			LVCOLUMNW col = { 0 };
+			col.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH;
+			col.fmt = LVCFMT_LEFT;	
+			col.cx = sz;
+			col.pszText = &wstr[0];
+			col.cchTextMax = wstr.size();
+
+			SendMessageW( wnd_, LVM_INSERTCOLUMN, index, reinterpret_cast< LPARAM >( &col ) );
+		}
+
 		int insert(int index, boost::string_ref str) noexcept
 		{
 			std::wstring wstr( multibyte_to_wide( str, CP_UTF8 ) );

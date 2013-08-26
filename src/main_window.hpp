@@ -7,16 +7,35 @@
 #include "pmm.hpp"
 #include "result_view.hpp"
 #include "filter.hpp"
+#include <array>
 #include <boost/spirit/include/qi.hpp>
 
 namespace pmm_lookupper {
+
+	inline constexpr UINT id_to_num(UINT id) noexcept
+	{
+		return id == IDC_STATIC_EXT ? 0 
+			: id == IDC_EXTFILTER ? 1
+			: id == IDC_DUPLICATION ? 2
+			: id == IDC_FOLDER_ONLY ? 3 
+			: 0xffffffff;
+	};
+
+	inline constexpr UINT num_to_id(UINT n) noexcept
+	{
+		return n == 0 ? IDC_STATIC_EXT
+			: n == 1 ? IDC_EXTFILTER
+			: n == 2 ? IDC_DUPLICATION
+			: n == 3 ? IDC_FOLDER_ONLY
+			: 0xffffffff;
+	}
 
 	class main_window
 	{
 	public:
 		using event_handler_type = event_handler< 
 			main_window, 
-			event::drop_files, event::command, event::notify, event::close, event::destroy 
+			event::drop_files, event::command, event::notify, event::sizing, event::close, event::destroy 
 		>;
 
 	private:
@@ -25,6 +44,8 @@ namespace pmm_lookupper {
 		boost::shared_ptr< result_view< main_window > > result_;
 		event_handler_type eh_;
 		std::vector< std::string > data_;
+		RECT rv_offset_;
+		std::array< POINT, 4 > opt_offsets_;
 
 		main_window() :
 			dlg_( CreateDialogW( 
@@ -34,16 +55,22 @@ namespace pmm_lookupper {
 			) ),
 			result_( result_view< main_window >::make( dlg_, IDC_RESULT ) )
 		{ 
-			if( dlg_ ) {
-				eh_.set( event::command(), &on_command );
-				eh_.set( event::drop_files(), &on_dragfiles );
-				eh_.set( event::notify(), &on_notify );
-				eh_.set( event::destroy(), &on_destroy );
-
-				popup_ = LoadMenuW( nullptr, MAKEINTRESOURCEW( IDR_POPUPMENU ) );
-
-				set_window_text( GetDlgItem( dlg_, IDC_EXTFILTER ), "pmx, pmd, x, wav, bmp" );
+			if( !dlg_ || !result_ ) {
+				throw std::runtime_error( "ウィンドウを生成できませんでした" );
 			}
+
+			eh_.set( event::command(), &on_command );
+			eh_.set( event::drop_files(), &on_dragfiles );
+			eh_.set( event::notify(), &on_notify );
+			eh_.set( event::sizing(), &on_sizing );
+			eh_.set( event::destroy(), &on_destroy );
+
+			popup_ = LoadMenuW( nullptr, MAKEINTRESOURCEW( IDR_POPUPMENU ) );
+
+			set_window_text( GetDlgItem( dlg_, IDC_EXTFILTER ), "pmx, pmd, x, wav, bmp" );
+
+			rv_offset_ = result_view_offset();
+			opt_offsets_ = option_offsets();
 		}
 
 	public:
@@ -129,6 +156,42 @@ namespace pmm_lookupper {
 		}
 
 	private:
+		inline RECT result_view_offset() const noexcept
+		{
+			RECT rc;
+			GetWindowRect( dlg_, &rc );
+
+			RECT rv_rc;
+			GetWindowRect( result_->handle(), &rv_rc );
+
+			return {
+				rv_rc.left - rc.left,
+				rv_rc.top - rc.top,
+				rc.right - rv_rc.right,
+				rc.bottom - rv_rc.bottom
+			};
+		}
+
+		inline std::array< POINT, 4 > option_offsets() const noexcept
+		{
+			RECT rc;
+			GetClientRect( dlg_, &rc );
+
+			std::array< POINT, 4 > dest;
+			for( int i = 0; i < 4; ++i ) {
+				RECT opt_rc;
+				GetWindowRect( GetDlgItem( dlg_, num_to_id( i ) ), &opt_rc );
+
+				POINT pt = { opt_rc.left, opt_rc.top };
+				ScreenToClient( dlg_, &pt );
+
+				dest[i].x = rc.right - pt.x;
+				dest[i].y = pt.y;
+			}
+
+			return dest;
+		}
+
 		void show_explorer() const
 		{
 			auto paths = get_result_view()->selected();
@@ -269,6 +332,27 @@ namespace pmm_lookupper {
 			case IDC_RESULT :
 				result_notify( wnd, hdr );
 				break;
+			}
+		}
+
+		static void on_sizing(main_window& wnd, UINT, RECT const& rc)
+		{
+			SetWindowPos( 
+				wnd.result_->handle(), nullptr,
+				0, 0, 
+				rc.right - rc.left - wnd.rv_offset_.right - wnd.rv_offset_.left, 
+				rc.bottom - rc.top - wnd.rv_offset_.bottom - wnd.rv_offset_.top,
+				SWP_NOZORDER | SWP_NOMOVE
+			);
+
+			for( int i = 0; i < 4; ++i ) {
+				SetWindowPos( 
+					GetDlgItem( wnd.handle(), num_to_id( i ) ), nullptr,
+					rc.right - rc.left - wnd.opt_offsets_[i].x - GetSystemMetrics( SM_CXSIZEFRAME ) * 2, 
+					wnd.opt_offsets_[i].y, 
+					0, 0,
+					SWP_NOZORDER | SWP_NOSIZE | SWP_ASYNCWINDOWPOS
+				);
 			}
 		}
 

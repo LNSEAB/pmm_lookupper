@@ -37,6 +37,10 @@ namespace pmm_lookupper {
 				obj->event().invoke( event::notify(), *obj, wparam, reinterpret_cast< NMHDR const* >( lparam ) );
 				return TRUE;
 
+			case WM_SIZING :
+				obj->event().invoke( event::sizing(), *obj, wparam, *reinterpret_cast< RECT const* >( lparam ) );
+				return FALSE;
+
 			case WM_CLOSE :
 				if( obj->event().empty( event::close() ) || *( obj->event().invoke( event::close(), *obj ) ) ) {
 					DestroyWindow( hwnd );

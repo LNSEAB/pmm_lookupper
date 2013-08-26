@@ -24,6 +24,12 @@ namespace pmm_lookupper { namespace event {
 		using type = void (Widget&, UINT, NMHDR const*);
 	};
 
+	struct sizing
+	{
+		template <class Widget>
+		using type = void (Widget&, UINT, RECT const&);
+	};
+
 	struct close
 	{
 		template <class Widget>
