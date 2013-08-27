@@ -96,7 +96,7 @@ namespace pmm_lookupper {
 			std::vector< std::string > exts;
 
 			auto const tmp_exts = get_window_text( GetDlgItem( handle(), IDC_EXTFILTER ) );
-			auto const parser = qi::as< std::vector< std::string > >()[ +qi::alnum >> *( ',' >> +qi::alnum ) ];
+			auto const parser = qi::as< std::vector< std::string > >()[ +qi::alnum % ',' ];
 			qi::phrase_parse( tmp_exts.begin(), tmp_exts.end(), parser, qi::space_type(), exts );
 
 			for( auto& ext : exts ) {
