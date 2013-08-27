@@ -59,6 +59,21 @@ namespace pmm_lookupper {
 				throw std::runtime_error( "ウィンドウを生成できませんでした" );
 			}
 
+			SendMessage( 
+				dlg_, WM_SETICON, ICON_BIG, 
+				reinterpret_cast< LPARAM >( LoadImage( 
+					GetModuleHandle( nullptr ), MAKEINTRESOURCEW( IDI_LARGE ), IMAGE_ICON, 0, 0,  
+					LR_DEFAULTSIZE | LR_SHARED
+				) )
+			);
+			SendMessage( 
+				dlg_, WM_SETICON, ICON_SMALL, 
+				reinterpret_cast< LPARAM >( LoadImage( 
+					GetModuleHandle( nullptr ), MAKEINTRESOURCEW( IDI_SMALL ), IMAGE_ICON, 0, 0,
+					LR_DEFAULTSIZE | LR_SHARED
+				) )
+			);
+
 			eh_.set( event::command(), &on_command );
 			eh_.set( event::drop_files(), &on_dragfiles );
 			eh_.set( event::notify(), &on_notify );

@@ -94,6 +94,18 @@ IDR_ACCELERATORS ACCELERATORS
 
 
 //
+// Icon resources
+//
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDI_LARGE          ICON           ".\\pmm_lookupper_large.ico"
+
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDI_SMALL          ICON           ".\\pmm_lookupper_small.ico"
+
+
+
+//
 // Manifest resources
 //
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
