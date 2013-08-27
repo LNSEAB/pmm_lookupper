@@ -7,11 +7,11 @@
 
 namespace pmm_lookupper { 
 
-	inline std::vector< std::string > remove_file_path(std::vector< std::string > const& buf)
+	inline std::vector< std::string > remove_file_path(std::vector< std::string > const& paths)
 	{
 		std::vector< std::string > result;
 
-		for( auto const& str : buf ) {
+		for( auto const& str : paths ) {
 			if( PathIsDirectoryW( multibyte_to_wide( str, CP_UTF8 ).c_str() ) ) {
 				result.emplace_back( str );
 			}
@@ -24,11 +24,12 @@ namespace pmm_lookupper {
 		return result;
 	}
 
-	inline std::vector< std::string > match_extension(std::vector< std::string > const& buf, std::vector< std::string > const& exts)
-	{
+	inline std::vector< std::string > match_extension(
+		std::vector< std::string > const& paths, std::vector< std::string > const& exts
+	) {
 		std::vector< std::string > result;
 
-		for( auto const& path : buf ) {
+		for( auto const& path : paths ) {
 			auto p = path.find_last_of( '.' );
 			if( p == path.npos ) {
 				continue;

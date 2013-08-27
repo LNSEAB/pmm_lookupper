@@ -92,13 +92,16 @@ namespace pmm_lookupper {
 		inline std::vector< std::string > get_extensions() const
 		{
 			namespace qi = boost::spirit::qi;
-
-			auto const tmp_exts = get_window_text( GetDlgItem( handle(), IDC_EXTFILTER ) );
-			auto const parser = qi::as_string[+qi::alnum] % ',';
+			
 			std::vector< std::string > exts;
 
+			auto const tmp_exts = get_window_text( GetDlgItem( handle(), IDC_EXTFILTER ) );
+			auto const parser = qi::as< std::vector< std::string > >()[ +qi::alnum >> *( ',' >> +qi::alnum ) ];
 			qi::phrase_parse( tmp_exts.begin(), tmp_exts.end(), parser, qi::space_type(), exts );
-			boost::for_each( exts, [](std::string& s){ s = std::string( "." ) + s; } );
+
+			for( auto& ext : exts ) {
+				ext = std::string( "." ) + ext;
+			}
 
 			return exts;
 		}
@@ -132,13 +135,17 @@ namespace pmm_lookupper {
 		{
 			std::vector< std::string > errors;
 
+			data_.clear();
+
 			for( auto const& f : files ) {
 				auto const paths = find_pmm_paths( f );
 				if( paths.which() == 1 ) {
 					errors.push_back( f );
 				}
 				else {
-					data_ = boost::get< std::vector< std::string > >( paths );
+					for( auto const& p : boost::get< std::vector< std::string > >( paths ) ) {
+						data_.push_back( p );
+					}
 				}
 			}
 
