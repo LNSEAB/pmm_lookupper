@@ -3,6 +3,7 @@
 #include <clocale>
 #include "winapi.hpp"
 #include "main_window.hpp"
+#include "command_line.hpp"
 
 int WINAPI WinMain(HINSTANCE hinst, HINSTANCE, LPSTR, int cmdshow)
 {
@@ -14,7 +15,8 @@ int WINAPI WinMain(HINSTANCE hinst, HINSTANCE, LPSTR, int cmdshow)
 			throw std::runtime_error( "ウィンドウを生成できませんでした" );
 		}
 
-		HACCEL accel = LoadAccelerators( hinst, MAKEINTRESOURCEW( IDR_ACCELERATORS ) );
+		auto const accel = pmm_lookupper::load_accelerators( hinst, IDR_ACCELERATORS );
+		pmm_lookupper::parse_command_line( *wnd );
 
 		ShowWindow( wnd->handle(), cmdshow );
 
@@ -28,13 +30,11 @@ int WINAPI WinMain(HINSTANCE hinst, HINSTANCE, LPSTR, int cmdshow)
 				throw std::runtime_error( "GetMessageエラー" );
 			}
 
-			if( !TranslateAccelerator( wnd->handle(), accel, &msg ) ) {
+			if( !TranslateAccelerator( wnd->handle(), accel.get(), &msg ) ) {
 				TranslateMessage( &msg );
 				DispatchMessageW( &msg );
 			}
 		}
-
-		DestroyAcceleratorTable( accel );
 	}
 	catch( std::exception const& e ) {
 		pmm_lookupper::message_box( "エラー", e.what(), MB_OK | MB_ICONWARNING );

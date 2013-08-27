@@ -39,7 +39,7 @@ namespace pmm_lookupper {
 	struct locale_free_deleter
 	{
 		template <class T>
-		inline void operator()(T* p) const noexcept
+		inline void operator()(T p) const noexcept
 		{
 			LocalFree( p );
 		}
@@ -47,6 +47,24 @@ namespace pmm_lookupper {
 
 	template <class T>
 	using local_ptr = std::unique_ptr< T, locale_free_deleter >;
+
+	struct destroy_accelerator_deleter
+	{
+		inline void operator()(HACCEL p) const noexcept
+		{
+			DestroyAcceleratorTable( p );
+		}
+	};
+
+	using accelerator_ptr = std::unique_ptr< std::remove_pointer< HACCEL >::type, destroy_accelerator_deleter >;
+
+	inline accelerator_ptr load_accelerators(HINSTANCE hinst, UINT id) noexcept
+	{
+		return accelerator_ptr(
+			LoadAcceleratorsW( hinst, MAKEINTRESOURCEW( id ) ),
+			destroy_accelerator_deleter()
+		);
+	}
 
 	inline std::wstring multibyte_to_wide(boost::string_ref src, UINT code)
 	{
