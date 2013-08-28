@@ -70,7 +70,7 @@ section
 
 		o64: ../$(PROGRAM)
 
-	.SUBDIRS: ./o64
+	.SUBDIRS: ./d64
 		PROGRAM = pmm_lookupper_64_debug$(EXE)
 		CXXFLAGS += -g
 
