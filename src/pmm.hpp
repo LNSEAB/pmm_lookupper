@@ -37,7 +37,7 @@ namespace detail {
 	}
 
 	template <class Iterator>
-	inline bool exists_drive_letter(Iterator itr, Iterator end)
+	inline bool drive_letter_exists(Iterator itr, Iterator end)
 	{
 		boost::string_ref const str( ":\\" );
 
@@ -65,7 +65,7 @@ namespace detail {
 		std::vector< std::string > result;
 
 		for( auto itr = buf.begin(); itr != buf.end(); ++itr ) {
-			if( !exists_drive_letter( itr, buf.end() ) ) {
+			if( !drive_letter_exists( itr, buf.end() ) ) {
 				continue;
 			}
 
@@ -80,7 +80,7 @@ namespace detail {
 
 } // namespace detail
 
-	inline boost::variant< std::vector< std::string >, std::string > find_pmm_paths(boost::string_ref path)
+	inline boost::variant< std::vector< std::string >, std::string > pmm_contain_file_paths(boost::string_ref path)
 	{
 		auto const buf = detail::read_file( path );
 		if( buf.empty() || !detail::is_pmm_file( buf ) ) {

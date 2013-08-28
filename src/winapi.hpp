@@ -68,7 +68,7 @@ namespace pmm_lookupper {
 
 	inline std::wstring multibyte_to_wide(boost::string_ref src, UINT code)
 	{
-		int const sz = MultiByteToWideChar( code, 0, src.data(), src.size(), nullptr, 0 ) + 1;
+		int const sz = MultiByteToWideChar( code, 0, src.data(), src.size(), nullptr, 0 );
 		if( sz == 0 ) {
 			return {};
 		}
@@ -81,7 +81,7 @@ namespace pmm_lookupper {
 	
 	inline std::string wide_to_multibyte(boost::wstring_ref src, UINT code)
 	{
-		int const sz = WideCharToMultiByte( code, 0, src.data(), src.size(), nullptr, 0, nullptr, 0 ) + 1;
+		int const sz = WideCharToMultiByte( code, 0, src.data(), src.size(), nullptr, 0, nullptr, 0 );
 		if( sz == 0 ) {
 			return {};
 		}

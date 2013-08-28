@@ -153,7 +153,7 @@ namespace pmm_lookupper {
 			data_.clear();
 
 			for( auto const& f : files ) {
-				auto const paths = find_pmm_paths( f );
+				auto const paths = pmm_contain_file_paths( f );
 				if( paths.which() == 1 ) {
 					errors.push_back( f );
 				}
@@ -168,7 +168,7 @@ namespace pmm_lookupper {
 				std::string str( "読み込めないファイルがありました。\r\n" );
 
 				for( auto const& s : errors ) {
-					str += s + "\r\n";
+					str += s.substr( 0, s.find( '\0' ) ) + std::string( "\r\n" );
 				}
 
 				message_box( "エラー", str, MB_OK | MB_ICONWARNING );
