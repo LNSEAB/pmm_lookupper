@@ -82,7 +82,7 @@ namespace pmm_lookupper {
 
 			popup_ = LoadMenuW( nullptr, MAKEINTRESOURCEW( IDR_POPUPMENU ) );
 
-			set_window_text( GetDlgItem( dlg_, IDC_EXTFILTER ), "pmx, pmd, x, wav, bmp" );
+			set_window_text( GetDlgItem( dlg_, IDC_EXTFILTER ), "pmx pmd x wav bmp" );
 
 			rv_offset_ = result_view_offset();
 			opt_offsets_ = option_offsets();
@@ -111,8 +111,8 @@ namespace pmm_lookupper {
 			std::vector< std::string > exts;
 
 			auto const tmp_exts = get_window_text( GetDlgItem( handle(), IDC_EXTFILTER ) );
-			auto const parser = qi::as< std::vector< std::string > >()[ +qi::alnum % ',' ];
-			qi::phrase_parse( tmp_exts.begin(), tmp_exts.end(), parser, qi::space_type(), exts );
+			auto const parser = qi::as< std::vector< std::string > >()[ +qi::alnum % qi::omit[+qi::lit( ' ' )] ];
+			qi::parse( tmp_exts.begin(), tmp_exts.end(), parser, exts );
 
 			for( auto& ext : exts ) {
 				ext = std::string( "." ) + ext;

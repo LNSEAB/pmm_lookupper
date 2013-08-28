@@ -31,6 +31,11 @@ namespace pmm_lookupper {
 				RECT rc;
 				GetWindowRect( wnd_, &rc );
 
+				SendMessageW( 
+					wnd_, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, 
+					LVS_EX_FULLROWSELECT
+				);
+
 				insert_column( 0, "ファイルパス", static_cast< int >( ( rc.right - rc.left ) * 0.97f ) );
 
 				eh_.set( event::drop_files(), &on_drop_files );
