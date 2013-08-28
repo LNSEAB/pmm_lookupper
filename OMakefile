@@ -1,16 +1,94 @@
-.PHONY: all clean
+.PHONY: all o32 o64 d32 d64 clean
 
 CXX = g++
-CXXFLAGS += -std=c++11 -mwindows -Wall -Wunused-parameter -DBOOST_ERROR_CODE_HEADER_ONLY -DBOOST_SYSTEM_NO_LIB
+CXXFLAGS = -std=c++11 -mwindows -Wall -Wunused-parameter -DBOOST_ERROR_CODE_HEADER_ONLY -DBOOST_SYSTEM_NO_LIB
 INCLUDE = 
 LDFLAGS = -mwindows -static 
 LIBS = -lkernel32 -lgdi32 -luser32 -lcomctl32 -lshlwapi -lcomdlg32
 
-PROGRAM = pmm_lookupper$(EXE)
+CXXFILES[] = main
+
+.SCANNER: %.o: ../src/%.cpp
+	$(CXX) -std=c++11 $(INCLUDE) -MM $<
+
+section
+	CXXFLAGS += -m32
+	LDFLAGS += -m32
+	RESFLAGS = --target=pe-i386
+
+	mkdir( -p o32 )
+	mkdir( -p d32 )
+
+	.SUBDIRS: ./o32
+		PROGRAM = pmm_lookupper_32$(EXE)
+		CXXFLAGS += -O3
+
+		%.o: ../src/%.cpp
+			$(CXX) -c $(CXXFLAGS) $< -o $@
+
+		resource.o: ../src/resource.rc
+			windres $(RESFLAGS) $^ $@
+
+		../$(PROGRAM): $(addsuffix .o, $(CXXFILES)) resource.o
+			$(CXX) $(LDFLAGS) $^ $(LIBS) -o $@
+
+		o32: ../$(PROGRAM)
+
+	.SUBDIRS: ./d32
+		PROGRAM = pmm_lookupper_32_debug$(EXE)
+		CXXFLAGS += -g
+
+		%.o: ../src/%.cpp
+			$(CXX) -c $(CXXFLAGS) $< -o $@
+
+		resource.o: ../src/resource.rc
+			windres $(RESFLAGS) $^ $@
+
+		../$(PROGRAM): $(addsuffix .o, $(CXXFILES)) resource.o
+			$(CXX) $(LDFLAGS) $^ $(LIBS) -o $@
+
+		d32: ../$(PROGRAM)
+
+section
+	RESFLAGS = --target=pe-x86-64
+
+	mkdir( -p o64 )
+	mkdir( -p d64 )
+
+	.SUBDIRS: ./o64
+		PROGRAM = pmm_lookupper_64$(EXE)
+		CXXFLAGS += -O3
+
+		%.o: ../src/%.cpp
+			$(CXX) -c $(CXXFLAGS) $< -o $@
+
+		resource.o: ../src/resource.rc
+			windres $(RESFLAGS) $^ $@
+
+		../$(PROGRAM): $(addsuffix .o, $(CXXFILES)) resource.o
+			$(CXX) $(LDFLAGS) $^ $(LIBS) -o $@
+
+		o64: ../$(PROGRAM)
+
+	.SUBDIRS: ./o64
+		PROGRAM = pmm_lookupper_64_debug$(EXE)
+		CXXFLAGS += -g
+
+		%.o: ../src/%.cpp
+			$(CXX) -c $(CXXFLAGS) $< -o $@
+
+		resource.o: ../src/resource.rc
+			windres $(RESFLAGS) $^ $@
+
+		../$(PROGRAM): $(addsuffix .o, $(CXXFILES)) resource.o
+			$(CXX) $(LDFLAGS) $^ $(LIBS) -o $@
+
+		d64: ../$(PROGRAM)
+
+all: o32 o64 d32 d64
 
 clean:
-	rm -rf $(PROGRAM)
-
-.SUBDIRS: src
+	rm -rf o32 o64 d32 d64
+	rm -rf *.exe
 
 .DEFAULT: all
