@@ -20,7 +20,7 @@ section
 	mkdir( -p d32 )
 
 	.SUBDIRS: ./o32
-		PROGRAM = pmm_lookupper_32$(EXE)
+		PROGRAM = PMMLookupper_32$(EXE)
 		CXXFLAGS += -O3
 
 		%.o: ../src/%.cpp
@@ -35,7 +35,7 @@ section
 		o32: ../$(PROGRAM)
 
 	.SUBDIRS: ./d32
-		PROGRAM = pmm_lookupper_32_debug$(EXE)
+		PROGRAM = PMMLookupper_32_debug$(EXE)
 		CXXFLAGS += -g
 
 		%.o: ../src/%.cpp
@@ -56,7 +56,7 @@ section
 	mkdir( -p d64 )
 
 	.SUBDIRS: ./o64
-		PROGRAM = pmm_lookupper_64$(EXE)
+		PROGRAM = PMMLookupper_64$(EXE)
 		CXXFLAGS += -O3
 
 		%.o: ../src/%.cpp
@@ -71,7 +71,7 @@ section
 		o64: ../$(PROGRAM)
 
 	.SUBDIRS: ./d64
-		PROGRAM = pmm_lookupper_64_debug$(EXE)
+		PROGRAM = PMMLookupper_64_debug$(EXE)
 		CXXFLAGS += -g
 
 		%.o: ../src/%.cpp
