@@ -283,7 +283,7 @@ namespace pmm_lookupper {
 				std::ofstream ofs( convert_code( boost::get< std::string >( result ), CP_UTF8, CP_OEMCP ) );
 				for( auto const& str : wnd.get_result_view()->data() ) {
 					auto const s = convert_code( str, CP_UTF8, CP_OEMCP );
-					ofs << s.substr( 0, s.find( '\0' ) ) << std::endl;
+					ofs << s << std::endl;
 				}
 			}
 		}
