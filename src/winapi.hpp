@@ -128,23 +128,19 @@ namespace pmm_lookupper {
 	{
 		UINT const cnt = DragQueryFileW( p, -1, nullptr, 0 );
 
-		std::vector< std::wstring > strs;
-		strs.reserve( cnt );
+		std::vector< std::string > result;
+		result.reserve( cnt );
 
 		for( UINT i = 0; i < cnt; ++i ) {
 			UINT const sz = DragQueryFileW( p, i, nullptr, 0 ) + 1;
 
 			std::wstring str( sz, L'\0' );
 			DragQueryFileW( p, i, &str[0], str.size() );
+			str.pop_back();
 
-			strs.emplace_back( std::move( str ) );
+			auto const r = wide_to_multibyte( str, CP_UTF8 );
+			result.emplace_back( r );
 		}
-
-		std::vector< std::string > result( strs.size() );
-		boost::transform( 
-			strs, result.begin(), 
-			[](std::wstring const& w) -> std::string { return wide_to_multibyte( w, CP_UTF8 ); } 
-		);
 
 		return result;
 	}
@@ -238,7 +234,8 @@ namespace pmm_lookupper {
 
 	inline void copy_to_clipboard(HWND hwnd, boost::string_ref str)
 	{
-		std::string const s( convert_code( str, CP_UTF8, CP_OEMCP ) );
+		std::string s( convert_code( str, CP_UTF8, CP_OEMCP ) );
+		s += '\0';
 
 		HGLOBAL buf = GlobalAlloc( GHND | GMEM_SHARE, s.size() );
 		if( !buf ) {

@@ -46,6 +46,16 @@ namespace pmm_lookupper {
 		return result;
 	}
 
+	inline std::string get_extension(std::string const& path)
+	{
+		auto p = path.find_last_of( '.' );
+		if( p == path.npos ) {
+			return {};
+		}
+
+		return path.substr( p, path.npos );
+	}
+
 } // namespace pmm_lookupper
 
 #endif // PMM_LOOKUPPER_FILTER_HPP_

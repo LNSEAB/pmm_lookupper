@@ -82,7 +82,7 @@ namespace pmm_lookupper {
 
 			popup_ = LoadMenuW( nullptr, MAKEINTRESOURCEW( IDR_POPUPMENU ) );
 
-			set_window_text( GetDlgItem( dlg_, IDC_EXTFILTER ), "pmx pmd x wav bmp" );
+			set_window_text( GetDlgItem( dlg_, IDC_EXTFILTER ), "pmx pmd x wav bmp fx fxsub" );
 
 			rv_offset_ = result_view_offset();
 			opt_offsets_ = option_offsets();
@@ -104,7 +104,7 @@ namespace pmm_lookupper {
 			return result_;
 		}
 
-		inline std::vector< std::string > get_extensions() const
+		inline std::vector< std::string > get_extensions_filter() const
 		{
 			namespace qi = boost::spirit::qi;
 			
@@ -134,7 +134,7 @@ namespace pmm_lookupper {
 				buf = remove_file_path( buf );
 			}
 			else {
-				buf = match_extension( buf, get_extensions() );
+				buf = match_extension( buf, get_extensions_filter() );
 			}
 			boost::sort( buf );
 
@@ -153,14 +153,24 @@ namespace pmm_lookupper {
 			data_.clear();
 
 			for( auto const& f : files ) {
-				auto const paths = pmm_contain_file_paths( f );
-				if( paths.which() == 1 ) {
-					errors.push_back( f );
+				auto const ext = get_extension( f );
+
+				if( ext == ".pmm" ) {
+					auto const paths = pmm_contain_file_paths( f );
+					if( paths.empty() ) {
+						errors.push_back( f );
+					}
+					else {
+						for( auto const& p : paths ) {
+							data_.push_back( p );
+						}
+					}
+
+				}
+				else if( ext == ".emm" ) {
 				}
 				else {
-					for( auto const& p : boost::get< std::vector< std::string > >( paths ) ) {
-						data_.push_back( p );
-					}
+					errors.push_back( f );
 				}
 			}
 
@@ -168,7 +178,7 @@ namespace pmm_lookupper {
 				std::string str( "読み込めないファイルがありました。\r\n" );
 
 				for( auto const& s : errors ) {
-					str += s.substr( 0, s.find( '\0' ) ) + std::string( "\r\n" );
+					str += s + "\r\n";
 				}
 
 				message_box( "エラー", str, MB_OK | MB_ICONWARNING );
@@ -244,8 +254,8 @@ namespace pmm_lookupper {
 
 			std::string str;
 
-			for( auto itr = paths.begin(); itr != paths.begin() + paths.size() - 1; ++itr ) {
-				str += itr->substr( 0, itr->find( '\0' ) ) + "\r\n";
+			for( auto itr = paths.begin(); itr != paths.begin() + ( paths.size() - 1 ); ++itr ) {
+				str += *itr + "\r\n";
 			}
 			str += paths.back();
 
@@ -255,7 +265,7 @@ namespace pmm_lookupper {
 		static void on_idc_open(main_window& wnd)
 		{
 			auto const result = get_open_file_name( 
-				wnd.handle(), "PMMファイル (*.pmm)\n*.pmm\nすべてのファイル (*.*)\n*.*\n\n", "pmm",
+				wnd.handle(), "PMMファイル (*.pmm)\n*.pmm\nEMMファイル (*.emm)\n*.emm\nすべてのファイル (*.*)\n*.*\n\n", "pmm",
 				OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER | OFN_HIDEREADONLY 
 			);
 			if( result.which() == 0 ) {

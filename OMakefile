@@ -3,9 +3,8 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -mwindows -Wall -Wunused-parameter -DBOOST_ERROR_CODE_HEADER_ONLY -DBOOST_SYSTEM_NO_LIB
 INCLUDE = 
-LDFLAGS = -mwindows -static 
+LDFLAGS = -mwindows -static
 LIBS = -lkernel32 -lgdi32 -luser32 -lcomctl32 -lshlwapi -lcomdlg32
-
 CXXFILES[] = main
 
 .SCANNER: %.o: ../src/%.cpp
