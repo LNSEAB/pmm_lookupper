@@ -7,6 +7,7 @@
 #include "pmm.hpp"
 #include "result_view.hpp"
 #include "filter.hpp"
+#include "emm.hpp"
 #include <array>
 #include <boost/spirit/include/qi.hpp>
 
@@ -146,6 +147,33 @@ namespace pmm_lookupper {
 			rv->update( buf );
 		}
 
+		template <class F>
+		static void append_data(
+			std::string const& file, F f, std::vector< std::string >& data 
+		) {
+			auto const paths = f( file );
+			if( !paths.empty() ) {
+				for( auto const& p : paths ) {
+					data.push_back( p );
+				}
+			}
+		}
+
+		template <class F>
+		static void append_data(
+			std::string const& file, F f, std::vector< std::string >& data, std::vector< std::string >& errors
+		) {
+			auto const paths = f( file );
+			if( paths.empty() ) {
+				errors.push_back( file );
+			}
+			else {
+				for( auto const& p : paths ) {
+					data.push_back( p );
+				}
+			}
+		}
+
 		void refresh(std::vector< std::string > const& files)
 		{
 			std::vector< std::string > errors;
@@ -156,18 +184,17 @@ namespace pmm_lookupper {
 				auto const ext = get_extension( f );
 
 				if( ext == ".pmm" ) {
-					auto const paths = pmm_contain_file_paths( f );
-					if( paths.empty() ) {
-						errors.push_back( f );
-					}
-					else {
-						for( auto const& p : paths ) {
-							data_.push_back( p );
-						}
-					}
-
+					append_data( f, &pmm_contain_file_paths, data_, errors );
+					auto const emm_path = f.substr( 0, f.find_last_of( '.' ) ) + ".emm";
+					append_data( emm_path, &emm_contain_file_paths, data_ );
 				}
 				else if( ext == ".emm" ) {
+					if( is_emm_file( f ) ) {
+						append_data( f, &emm_contain_file_paths, data_ );
+					}
+					else {
+						errors.push_back( f );
+					}
 				}
 				else {
 					errors.push_back( f );
