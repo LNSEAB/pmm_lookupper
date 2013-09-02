@@ -2,50 +2,54 @@
 PMM Lookupper
 ---------------------
 
-PMMãƒ•ã‚¡ã‚¤ãƒ«å†…ã«ã‚ã‚‹ãƒ•ãƒ«ãƒ‘ã‚¹ã‚’è¡¨ç¤ºã—ã¦ä¿å­˜ã§ããŸã‚Šã—ã¾ã™ã€‚
+PMMƒtƒ@ƒCƒ‹“à‚É‚ ‚éƒtƒ‹ƒpƒX‚ð•\Ž¦‚µ‚Ä•Û‘¶‚Å‚«‚½‚è‚µ‚Ü‚·B
 
-ãƒ»ä½¿ã„æ–¹
-ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å†…ã«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ‰ãƒ©ãƒƒã‚°ã‚¢ãƒ³ãƒ‰ãƒ‰ãƒ­ãƒƒãƒ—ã—ãŸã‚Šã€ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‹ã‚‰é–‹ã„ã¦ãã ã•ã„ã€‚
-è¤‡æ•°ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’åŒæ™‚ã«èª­ã¿è¾¼ã‚€ã“ã¨ã‚‚å¯èƒ½ã§ã™ã€‚
+EŽg‚¢•û
+ƒEƒBƒ“ƒhƒE“à‚Éƒtƒ@ƒCƒ‹‚ðƒhƒ‰ƒbƒOƒAƒ“ƒhƒhƒƒbƒv‚µ‚½‚èAƒtƒ@ƒCƒ‹ƒƒjƒ…[‚©‚çŠJ‚¢‚Ä‚­‚¾‚³‚¢B
+•¡”‚Ìƒtƒ@ƒCƒ‹‚ð“¯Žž‚É“Ç‚Ýž‚Þ‚±‚Æ‚à‰Â”\‚Å‚·Bpmmƒtƒ@ƒCƒ‹Aemmƒtƒ@ƒCƒ‹‚ð“Ç‚Ýž‚Þ‚±‚Æ‚ª‚Å‚«‚Ü‚·B
 
-pmm_lookupper_32.exeã¯32bitã€pmm_lookupper_64.exeã¯64bitå¯¾å¿œã§ã™ã€‚
+pmm_lookupper_32.exe‚Í32bitApmm_lookupper_64.exe‚Í64bit‘Î‰ž‚Å‚·B‚»‚êˆÈŠO‚Ì“Á‚Éˆá‚¢‚Í‚ ‚è‚Ü‚¹‚ñB
 
-ãƒ»ä¿å­˜ã«ã¤ã„ã¦
-ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ä¿å­˜ã¯ã€é¸æŠžé …ç›®ã«é–¢ã‚ã‚‰ãšå…¨ã¦ã®é …ç›®ã‚’ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãè¾¼ã¿ã¾ã™ã€‚
+Epmmƒtƒ@ƒCƒ‹‚Ì“Ç‚Ýž‚ÝŽž‚É‚Â‚¢‚Ä
+pmmƒtƒ@ƒCƒ‹‚ð“Ç‚Ýž‚ÞŽž‚ÉAŠg’£Žq‚ðœ‚¢‚½“¯–¼‚Ìemmƒtƒ@ƒCƒ‹‚ðŽ©“®“I‚É“Ç‚Ýž‚Ý‚Ü‚·B
+ƒGƒtƒFƒNƒgŠÖŒW‚Ìƒtƒ@ƒCƒ‹‚ð•\Ž¦‚µ‚½‚­‚È‚¢Žž‚ÍAŠg’£ŽqƒtƒBƒ‹ƒ^‚ÌfxAfxsub‚ðÁ‚µ‚Ä‚­‚¾‚³‚¢B
 
-ãƒ»å„ç¨®æ©Ÿèƒ½
-ã€€ãƒ»æ‹¡å¼µå­ãƒ•ã‚£ãƒ«ã‚¿
-ã€€ã‚¹ãƒšãƒ¼ã‚¹åŒºåˆ‡ã‚Šã§è¤‡æ•°æŒ‡å®šã§ãã¾ã™ã€‚
+E•Û‘¶‚É‚Â‚¢‚Ä
+ƒtƒ@ƒCƒ‹ƒƒjƒ…[‚Ì•Û‘¶‚ÍA‘I‘ð€–Ú‚ÉŠÖ‚í‚ç‚¸‘S‚Ä‚Ì€–Ú‚ðƒeƒLƒXƒgƒtƒ@ƒCƒ‹‚É‘‚«ž‚Ý‚Ü‚·B
 
-ã€€ãƒ»é‡è¤‡ã‚’è¨±ã™ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹
-ã€€ãƒã‚§ãƒƒã‚¯ã‚’ã¤ã‘ã‚‹ã¨ã€åŒä¸€ãƒ•ã‚©ãƒ«ãƒ€ã®åŒä¸€ã®ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¤‡æ•°ã‚ã£ã¦ã‚‚ãã®ã¾ã¾è¡¨ç¤ºã—ã¾ã™ã€‚
+EŠeŽí‹@”\
+@EŠg’£ŽqƒtƒBƒ‹ƒ^
+@ƒXƒy[ƒX‹æØ‚è‚Å•¡”Žw’è‚Å‚«‚Ü‚·B
 
-ã€€ãƒ»ãƒ•ã‚©ãƒ«ãƒ€åã®ã¿ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹
-ã€€ãƒã‚§ãƒƒã‚¯ã‚’ã¤ã‘ã‚‹ã¨ã€ãƒ•ã‚¡ã‚¤ãƒ«åã‚’é™¤åŽ»ã—ãŸè¡¨ç¤ºã«ãªã‚Šã¾ã™ã€‚
+@Ed•¡‚ð‹–‚·ƒ`ƒFƒbƒNƒ{ƒbƒNƒX
+@ƒ`ƒFƒbƒN‚ð‚Â‚¯‚é‚ÆA“¯ˆêƒtƒHƒ‹ƒ_‚Ì“¯ˆê‚Ìƒtƒ@ƒCƒ‹‚ª•¡”‚ ‚Á‚Ä‚à‚»‚Ì‚Ü‚Ü•\Ž¦‚µ‚Ü‚·B
 
-ã€€ãƒ»ï¼ˆå³ã‚¯ãƒªãƒƒã‚¯ãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼‰ãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ã
-ã€€ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã™ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ã‚’ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ã§é–‹ãã¾ã™ã€‚
+@EƒtƒHƒ‹ƒ_–¼‚Ì‚Ýƒ`ƒFƒbƒNƒ{ƒbƒNƒX
+@ƒ`ƒFƒbƒN‚ð‚Â‚¯‚é‚ÆAƒtƒ@ƒCƒ‹–¼‚ðœ‹Ž‚µ‚½•\Ž¦‚É‚È‚è‚Ü‚·B
 
-ãƒ»ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³å¼•æ•°
-ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³ã‚‚ä½¿ãˆãªã„ã“ã¨ã¯ãªã„ã§ã™ã€‚
+@Ei‰EƒNƒŠƒbƒNƒƒjƒ…[jƒtƒHƒ‹ƒ_‚ðŠJ‚­
+@ƒtƒ@ƒCƒ‹‚ª‘¶Ý‚·‚éƒtƒHƒ‹ƒ_‚ðƒGƒNƒXƒvƒ[ƒ‰‚ÅŠJ‚«‚Ü‚·B
 
-pmm_lookupper.exe [ã‚ªãƒ—ã‚·ãƒ§ãƒ³]... [ãƒ•ã‚¡ã‚¤ãƒ«]...
+EƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ˆø”
+ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“‚àŽg‚¦‚È‚¢‚±‚Æ‚Í‚È‚¢‚Å‚·B
 
-ãƒ»ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³å¼•æ•°ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³
--e "æ–‡å­—åˆ—"  æ‹¡å¼µå­ãƒ•ã‚£ãƒ«ã‚¿
--d           é‡è¤‡ã‚’è¨±ã™
--f           ãƒ•ã‚©ãƒ«ãƒ€ã®ã¿
+pmm_lookupper.exe [ƒIƒvƒVƒ‡ƒ“]... [ƒtƒ@ƒCƒ‹]...
 
-ãƒ»åˆ¶é™
-ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚„ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã«å¯¾ã—ã¦ã€ç‰¹ã«åˆ¶é™ã¯è¨­ã‘ãªã„ã®ã§ã”è‡ªç”±ã«ãŠä½¿ã„ãã ã•ã„ã€‚
+EƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ˆø”‚ÌƒIƒvƒVƒ‡ƒ“
+-e "•¶Žš—ñ"  Šg’£ŽqƒtƒBƒ‹ƒ^
+-d           d•¡‚ð‹–‚·
+-f           ƒtƒHƒ‹ƒ_‚Ì‚Ý
 
-ãƒ»å…è²¬äº‹é …
-PMM Lookupperã®ä½¿ç”¨ã€ç”Ÿæˆã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã®åˆ©ç”¨ã€ãã‚Œã‚‰ã«é–¢ã™ã‚‹è¡Œç‚ºç­‰ã®å…¨ã¦ã®è¡Œç‚ºã«ãŠã„ã¦ç™ºç”Ÿã—ãŸ
-æå®³ã€ä¸åˆ©ç›Šç­‰ã«ã¤ã„ã¦ä¸€åˆ‡ã®è²¬ä»»ã¯è² ã„ã¾ã›ã‚“ã€‚
+E§ŒÀ
+ƒvƒƒOƒ‰ƒ€‚âƒ\[ƒXƒR[ƒh‚É‘Î‚µ‚ÄA“Á‚É§ŒÀ‚ÍÝ‚¯‚È‚¢‚Ì‚Å‚²Ž©—R‚É‚¨Žg‚¢‚­‚¾‚³‚¢B
 
-ãƒ»ãã®ä»–
-ã‚½ãƒ¼ã‚¹ãŒã»ã—ã„æ–¹ã¯ä»¥ä¸‹ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‹ã‚‰ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ã¦ãã ã•ã„ã€‚
+E–ÆÓŽ–€
+PMM Lookupper‚ÌŽg—pA¶¬‚³‚ê‚½ƒf[ƒ^‚Ì—˜—pA‚»‚ê‚ç‚ÉŠÖ‚·‚ésˆ×“™‚Ì‘S‚Ä‚Ìsˆ×‚É‚¨‚¢‚Ä”­¶‚µ‚½
+‘¹ŠQA•s—˜‰v“™‚É‚Â‚¢‚ÄˆêØ‚ÌÓ”C‚Í•‰‚¢‚Ü‚¹‚ñB
+
+E‚»‚Ì‘¼
+ƒ\[ƒX‚ª‚Ù‚µ‚¢•û‚ÍˆÈ‰º‚ÌƒAƒhƒŒƒX‚©‚çƒ_ƒEƒ“ƒ[ƒh‚µ‚Ä‚­‚¾‚³‚¢B
 http://github.com/LNSEAB/pmm_lookupper
 
-2013/08/27
+2013/09/02
 LNSEAB
