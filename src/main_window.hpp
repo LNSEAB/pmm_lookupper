@@ -8,29 +8,12 @@
 #include "result_view.hpp"
 #include "filter.hpp"
 #include "emm.hpp"
+#include "controls.hpp"
 #include <array>
 #include <boost/spirit/include/qi.hpp>
 
 namespace pmm_lookupper {
-
-	inline constexpr UINT id_to_num(UINT id) noexcept
-	{
-		return id == IDC_STATIC_EXT ? 0 
-			: id == IDC_EXTFILTER ? 1
-			: id == IDC_DUPLICATION ? 2
-			: id == IDC_FOLDER_ONLY ? 3 
-			: 0xffffffff;
-	};
-
-	inline constexpr UINT num_to_id(UINT n) noexcept
-	{
-		return n == 0 ? IDC_STATIC_EXT
-			: n == 1 ? IDC_EXTFILTER
-			: n == 2 ? IDC_DUPLICATION
-			: n == 3 ? IDC_FOLDER_ONLY
-			: 0xffffffff;
-	}
-
+	
 	class main_window
 	{
 	public:
@@ -46,7 +29,7 @@ namespace pmm_lookupper {
 		event_handler_type eh_;
 		std::vector< std::string > data_;
 		RECT rv_offset_;
-		std::array< POINT, 4 > opt_offsets_;
+		std::array< POINT, controls::size > opt_offsets_;
 
 		main_window() :
 			dlg_( CreateDialogW( 
@@ -231,13 +214,13 @@ namespace pmm_lookupper {
 			};
 		}
 
-		inline std::array< POINT, 4 > option_offsets() const noexcept
+		inline decltype( opt_offsets_ ) option_offsets() const noexcept
 		{
 			RECT rc;
 			GetClientRect( dlg_, &rc );
 
-			std::array< POINT, 4 > dest;
-			for( int i = 0; i < 4; ++i ) {
+			decltype( opt_offsets_ ) dest;
+			for( std::size_t i = 0; i < dest.size(); ++i ) {
 				RECT opt_rc;
 				GetWindowRect( GetDlgItem( dlg_, num_to_id( i ) ), &opt_rc );
 
@@ -404,7 +387,7 @@ namespace pmm_lookupper {
 				SWP_NOZORDER | SWP_NOMOVE
 			);
 
-			for( int i = 0; i < 4; ++i ) {
+			for( std::size_t i = 0; i < controls::size; ++i ) {
 				SetWindowPos( 
 					GetDlgItem( wnd.handle(), num_to_id( i ) ), nullptr,
 					rc.right - rc.left - wnd.opt_offsets_[i].x - GetSystemMetrics( SM_CXSIZEFRAME ) * 2, 

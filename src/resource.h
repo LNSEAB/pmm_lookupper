@@ -10,8 +10,10 @@
 #define IDI_LARGE                               114
 #define IDI_SMALL                               115
 #define IDC_STATIC_EXT                          1000
+#define IDC_STATIC_SORT_COND                    1001
 #define IDC_DUPLICATION                         1002
 #define IDC_RESULT                              1003
+#define IDC_SORT_COND                           1004
 #define IDM_COPY                                40000
 #define IDM_EXPLORER                            40001
 #define IDM_OPEN                                40002
