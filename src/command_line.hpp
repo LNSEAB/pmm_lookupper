@@ -25,6 +25,18 @@ namespace pmm_lookupper {
 				set_window_text( GetDlgItem( wnd.handle(), IDC_EXTFILTER ), argv[i + 1] );
 				++i;
 			}
+			else if( argv[i].find( "-s" ) != argv[i].npos ) {
+				if( i + 1 == argv.size() ) {
+					break;
+				}
+				if( argv[i + 1] == "path" ) {
+					cb_set_cursel( GetDlgItem( wnd.handle(), IDC_SORT_COND ), 0 );
+				}
+				else if( argv[i + 1] == "ext" ) {
+					cb_set_cursel( GetDlgItem( wnd.handle(), IDC_SORT_COND ), 1 );
+				}
+				++i;
+			}
 			else {
 				files.push_back( argv[i] );
 			}

@@ -43,20 +43,8 @@ namespace pmm_lookupper {
 				throw std::runtime_error( "ウィンドウを生成できませんでした" );
 			}
 
-			SendMessage( 
-				dlg_, WM_SETICON, ICON_BIG, 
-				reinterpret_cast< LPARAM >( LoadImage( 
-					GetModuleHandle( nullptr ), MAKEINTRESOURCEW( IDI_LARGE ), IMAGE_ICON, 0, 0,  
-					LR_DEFAULTSIZE | LR_SHARED
-				) )
-			);
-			SendMessage( 
-				dlg_, WM_SETICON, ICON_SMALL, 
-				reinterpret_cast< LPARAM >( LoadImage( 
-					GetModuleHandle( nullptr ), MAKEINTRESOURCEW( IDI_SMALL ), IMAGE_ICON, 0, 0,
-					LR_DEFAULTSIZE | LR_SHARED
-				) )
-			);
+			set_shared_icon( dlg_, ICON_BIG, IDI_LARGE );
+			set_shared_icon( dlg_, ICON_SMALL, IDI_SMALL );
 
 			eh_.set( event::command(), &on_command );
 			eh_.set( event::drop_files(), &on_dragfiles );
@@ -67,6 +55,9 @@ namespace pmm_lookupper {
 			popup_ = LoadMenuW( nullptr, MAKEINTRESOURCEW( IDR_POPUPMENU ) );
 
 			set_window_text( GetDlgItem( dlg_, IDC_EXTFILTER ), "pmx pmd x wav bmp fx fxsub" );
+			cb_add_string( GetDlgItem( dlg_, IDC_SORT_COND ), "ファイルパス" );
+			cb_add_string( GetDlgItem( dlg_, IDC_SORT_COND ), "拡張子" );
+			cb_set_cursel( GetDlgItem( dlg_, IDC_SORT_COND ), 0 );
 
 			rv_offset_ = result_view_offset();
 			opt_offsets_ = option_offsets();
@@ -115,12 +106,24 @@ namespace pmm_lookupper {
 			auto buf = data_;
 
 			if( IsDlgButtonChecked( handle(), IDC_FOLDER_ONLY ) ) {
+				EnableWindow( GetDlgItem( dlg_, IDC_SORT_COND ), FALSE );
 				buf = remove_file_path( buf );
 			}
 			else {
+				EnableWindow( GetDlgItem( dlg_, IDC_SORT_COND ), TRUE );
 				buf = match_extension( buf, get_extensions_filter() );
 			}
-			boost::sort( buf );
+
+			auto const sort_cond_index = cb_get_cursel( GetDlgItem( dlg_, IDC_SORT_COND ) );
+			if( IsWindowEnabled( GetDlgItem( dlg_, IDC_SORT_COND ) ) && sort_cond_index == 1 ) {
+				boost::sort( buf );
+				boost::stable_sort( buf, [](std::string const& lhs, std::string const& rhs) -> bool {
+					return boost::lexicographical_compare( get_extension( lhs ), get_extension( rhs ) );
+				} );
+			}
+			else {
+				boost::sort( buf );
+			}
 
 			if( !IsDlgButtonChecked( handle(), IDC_DUPLICATION ) ) {
 				buf.erase( std::unique( buf.begin(), buf.end() ), buf.end() );
@@ -345,6 +348,12 @@ namespace pmm_lookupper {
 
 			case IDM_EXPLORER :
 				wnd.show_explorer();
+				break;
+
+			case IDC_SORT_COND :
+				if( HIWORD( wparam ) == CBN_SELENDOK ) {
+					wnd.update();
+				}
 				break;
 			}
 		}

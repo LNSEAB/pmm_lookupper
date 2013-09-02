@@ -29,12 +29,15 @@
 #include <memory>
 #include <vector>
 #include <tuple>
+#include <type_traits>
 #include <boost/utility/string_ref.hpp>
 #include <boost/range/algorithm.hpp>
 #include <boost/variant.hpp>
 #include "resource.h"
 
 namespace pmm_lookupper {
+
+	extern void* enabler;
 
 	struct locale_free_deleter
 	{
@@ -258,6 +261,42 @@ namespace pmm_lookupper {
 		EmptyClipboard();
 		SetClipboardData( CF_TEXT, buf );
 		CloseClipboard();
+	}
+
+	template <class WP, class LP, typename std::enable_if< std::is_integral< LP >::value >::type*& = enabler>
+	inline LRESULT send_message(HWND hwnd, UINT msg, WP wparam, LP lparam) noexcept
+	{
+		return SendMessageW( hwnd, msg, wparam, lparam );
+	}
+
+	template <class WP, class LP, typename std::enable_if< std::is_pointer< LP >::value >::type*& = enabler>
+	inline LRESULT send_message(HWND hwnd, UINT msg, WP wparam, LP lparam) noexcept
+	{
+		return SendMessageW( hwnd, msg, wparam, reinterpret_cast< LPARAM >( lparam ) );
+	}
+
+	inline void cb_add_string(HWND hwnd, boost::string_ref str) noexcept
+	{
+		auto const tmp = multibyte_to_wide( str, CP_UTF8 );
+		send_message( hwnd, CB_ADDSTRING, 0, tmp.c_str() );
+	}
+
+	inline int cb_get_cursel(HWND hwnd) noexcept
+	{
+		return send_message( hwnd, CB_GETCURSEL, 0, 0 );
+	}
+
+	inline void cb_set_cursel(HWND hwnd, int index) noexcept
+	{
+		send_message( hwnd, CB_SETCURSEL, index, 0 ); 
+	}
+
+	inline void set_shared_icon(HWND hwnd, UINT icon_type, UINT id) noexcept
+	{
+		send_message( 
+			hwnd, WM_SETICON, icon_type, 
+			LoadImageW( GetModuleHandle( nullptr ), MAKEINTRESOURCEW( id ), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED ) 
+		);
 	}
 
 } // namespace pmm_lookupper
