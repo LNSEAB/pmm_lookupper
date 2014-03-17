@@ -15,7 +15,7 @@ namespace {
 
 	inline bool is_pmm_file(std::vector< char > const& buf) noexcept
 	{
-		boost::string_ref const sig( "Polygon Movie maker 0001" );
+		boost::string_ref const sig( "Polygon Movie maker 000" );
 
 		if( buf.size() <= sig.size() ) {
 			return false;
